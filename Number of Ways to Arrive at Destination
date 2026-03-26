@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+    public int countPaths(int V, int[][] edges) {
+        
+        List<List<int[]>> graph = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            graph.add(new ArrayList<>());
+        }
+        
+        // Build graph
+        for (int[] e : edges) {
+            int u = e[0], v = e[1], w = e[2];
+            graph.get(u).add(new int[]{v, w});
+            graph.get(v).add(new int[]{u, w});
+        }
+        
+        long[] dist = new long[V];
+        Arrays.fill(dist, Long.MAX_VALUE);
+        
+        long[] ways = new long[V];
+        
+        PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[1], b[1]));
+        
+        dist[0] = 0;
+        ways[0] = 1;
+        pq.add(new long[]{0, 0});
+        
+        while (!pq.isEmpty()) {
+            long[] curr = pq.poll();
+            int node = (int) curr[0];
+            long d = curr[1];
+            
+            if (d > dist[node]) continue;
+            
+            for (int[] nei : graph.get(node)) {
+                int next = nei[0];
+                int w = nei[1];
+                
+                if (dist[node] + w < dist[next]) {
+                    dist[next] = dist[node] + w;
+                    ways[next] = ways[node];
+                    pq.add(new long[]{next, dist[next]});
+                } 
+                else if (dist[node] + w == dist[next]) {
+                    ways[next] += ways[node];
+                }
+            }
+        }
+        
+        return (int) ways[V - 1];
+    }
+}
