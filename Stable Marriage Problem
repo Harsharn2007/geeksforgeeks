@@ -1,0 +1,57 @@
+class Solution {
+    public int[] stableMarriage(int[][] men, int[][] women) {
+        int n = men.length;
+        
+        int[] partnerOfWoman = new int[n]; // woman -> man
+        int[] partnerOfMan = new int[n];   // man -> woman
+        int[] nextProposal = new int[n];   // which woman to propose next
+        
+        // Initialize
+        Arrays.fill(partnerOfWoman, -1);
+        Arrays.fill(partnerOfMan, -1);
+        
+        // Ranking array for women: womanRank[w][m] = preference rank
+        int[][] womanRank = new int[n][n];
+        for (int w = 0; w < n; w++) {
+            for (int i = 0; i < n; i++) {
+                womanRank[w][women[w][i]] = i;
+            }
+        }
+        
+        Queue<Integer> freeMen = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            freeMen.add(i);
+        }
+        
+        while (!freeMen.isEmpty()) {
+            int man = freeMen.poll();
+            
+            int woman = men[man][nextProposal[man]];
+            nextProposal[man]++;
+            
+            if (partnerOfWoman[woman] == -1) {
+                // woman is free
+                partnerOfWoman[woman] = man;
+                partnerOfMan[man] = woman;
+            } else {
+                int currentMan = partnerOfWoman[woman];
+                
+                // check preference
+                if (womanRank[woman][man] < womanRank[woman][currentMan]) {
+                    // she prefers new man
+                    partnerOfWoman[woman] = man;
+                    partnerOfMan[man] = woman;
+                    
+                    // old man becomes free
+                    partnerOfMan[currentMan] = -1;
+                    freeMen.add(currentMan);
+                } else {
+                    // she rejects new man
+                    freeMen.add(man);
+                }
+            }
+        }
+        
+        return partnerOfMan;
+    }
+}
