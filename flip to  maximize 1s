@@ -1,0 +1,21 @@
+class Solution {
+    public int maxOnes(int arr[]) {
+        int n = arr.length;
+        int totalOnes = 0;
+
+        for (int x : arr) {
+            if (x == 1) totalOnes++;
+        }
+
+        int maxGain = 0, currGain = 0;
+
+        for (int x : arr) {
+            int val = (x == 0) ? 1 : -1;
+
+            currGain = Math.max(val, currGain + val);
+            maxGain = Math.max(maxGain, currGain);
+        }
+
+        return totalOnes + maxGain;
+    }
+}
