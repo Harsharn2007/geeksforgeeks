@@ -1,0 +1,42 @@
+import math
+
+class Solution:
+    def minSteps(self, m, n, d):
+        # If d is greater than both jugs
+        if d > max(m, n):
+            return -1
+        
+        # If not divisible by gcd → impossible
+        if d % math.gcd(m, n) != 0:
+            return -1
+        
+        # Helper to simulate pouring
+        def pour(fromCap, toCap, d):
+            fromJug = fromCap
+            toJug = 0
+            step = 1
+            
+            while fromJug != d and toJug != d:
+                # Transfer water
+                temp = min(fromJug, toCap - toJug)
+                toJug += temp
+                fromJug -= temp
+                step += 1
+                
+                if fromJug == d or toJug == d:
+                    break
+                
+                # If fromJug becomes empty, fill it
+                if fromJug == 0:
+                    fromJug = fromCap
+                    step += 1
+                
+                # If toJug becomes full, empty it
+                if toJug == toCap:
+                    toJug = 0
+                    step += 1
+            
+            return step
+        
+        # Try both ways and take minimum
+        return min(pour(m, n, d), pour(n, m, d))
