@@ -1,0 +1,26 @@
+class Solution {
+    public boolean canSplit(int arr[]) {
+        int total = 0;
+        
+        // Calculate total sum
+        for (int num : arr) {
+            total += num;
+        }
+        
+        // If total sum is odd, can't split equally
+        if (total % 2 != 0) return false;
+        
+        int prefixSum = 0;
+        
+        // Check if any prefix has sum = total/2
+        for (int i = 0; i < arr.length - 1; i++) {
+            prefixSum += arr[i];
+            
+            if (prefixSum == total / 2) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+}
