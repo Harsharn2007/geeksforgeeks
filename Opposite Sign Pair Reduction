@@ -1,0 +1,46 @@
+import java.util.*;
+import java.io.*;
+
+class Solution {
+    public ArrayList<Integer> reducePairs(int[] arr) {
+        Stack<Integer> stack = new Stack<>();
+        
+        for (int num : arr) {
+            int current = num;
+            boolean alive = true;
+            
+            while (alive) {
+                if (stack.isEmpty()) {
+                    stack.push(current);
+                    alive = false;
+                } else {
+                    int top = stack.peek();
+                    // Opposite signs = collision
+                    if ((top > 0 && current < 0) || (top < 0 && current > 0)) {
+                        int absTop = Math.abs(top);
+                        int absCur = Math.abs(current);
+                        
+                        if (absTop > absCur) {
+                            // top wins, current destroyed
+                            alive = false;
+                        } else if (absTop < absCur) {
+                            // current wins, pop top and re-check
+                            stack.pop();
+                        } else {
+                            // equal, both destroyed
+                            stack.pop();
+                            alive = false;
+                        }
+                    } else {
+                        // same sign, no collision
+                        stack.push(current);
+                        alive = false;
+                    }
+                }
+            }
+        }
+        
+        // Return as ArrayList directly
+        return new ArrayList<>(stack);
+    }
+}
