@@ -1,0 +1,35 @@
+class Solution {
+    public int minSwaps(int[] arr) {
+        int n = arr.length;
+        
+        int ones = 0;
+        for (int num : arr) {
+            if (num == 1) ones++;
+        }
+        
+        // Edge case: no 1s
+        if (ones == 0) return -1;
+        
+        // Only one 1 → already grouped
+        if (ones == 1) return 0;
+        
+        int curr = 0;
+        
+        // First window
+        for (int i = 0; i < ones; i++) {
+            if (arr[i] == 1) curr++;
+        }
+        
+        int maxOnes = curr;
+        
+        // Sliding window
+        for (int i = ones; i < n; i++) {
+            if (arr[i] == 1) curr++;
+            if (arr[i - ones] == 1) curr--;
+            
+            maxOnes = Math.max(maxOnes, curr);
+        }
+        
+        return ones - maxOnes;
+    }
+}
