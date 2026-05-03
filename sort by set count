@@ -1,0 +1,25 @@
+import java.util.*;
+
+class Solution {
+    ArrayList<Integer> sortBySetBitCount(int[] arr) {
+        ArrayList<Integer> list = new ArrayList<>();
+        
+        // Add elements to list
+        for (int num : arr) {
+            list.add(num);
+        }
+        
+        // Sort based on set bit count (descending)
+        Collections.sort(list, (a, b) -> {
+            int countA = Integer.bitCount(a);
+            int countB = Integer.bitCount(b);
+            
+            if (countA != countB) {
+                return countB - countA; // descending order
+            }
+            return 0; // maintain order if equal
+        });
+        
+        return list;
+    }
+}
