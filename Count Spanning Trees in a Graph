@@ -1,0 +1,80 @@
+class Solution {
+
+    public int countSpanTree(int n, int[][] edges) {
+
+        long[][] laplacian = new long[n][n];
+
+        // Build Laplacian Matrix
+        for (int[] e : edges) {
+
+            int u = e[0];
+            int v = e[1];
+
+            laplacian[u][u]++;
+            laplacian[v][v]++;
+
+            laplacian[u][v]--;
+            laplacian[v][u]--;
+        }
+
+        // Create cofactor matrix
+        long[][] mat = new long[n - 1][n - 1];
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < n; j++) {
+                mat[i - 1][j - 1] = laplacian[i][j];
+            }
+        }
+
+        return (int)Math.round(determinant(mat, n - 1));
+    }
+
+    double determinant(long[][] mat, int n) {
+
+        double[][] a = new double[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                a[i][j] = mat[i][j];
+            }
+        }
+
+        double det = 1;
+
+        for (int i = 0; i < n; i++) {
+
+            int pivot = i;
+
+            while (pivot < n && Math.abs(a[pivot][i]) < 1e-9) {
+                pivot++;
+            }
+
+            if (pivot == n)
+                return 0;
+
+            // Swap rows
+            if (pivot != i) {
+
+                double[] temp = a[i];
+                a[i] = a[pivot];
+                a[pivot] = temp;
+
+                det *= -1;
+            }
+
+            det *= a[i][i];
+
+            // Elimination
+            for (int j = i + 1; j < n; j++) {
+
+                double factor = a[j][i] / a[i][i];
+
+                for (int k = i; k < n; k++) {
+                    a[j][k] -= factor * a[i][k];
+                }
+            }
+        }
+
+        return det;
+    }
+}
