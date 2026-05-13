@@ -1,0 +1,44 @@
+class Solution {
+    public int findMotherVertex(int V, int[][] edges) {
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for (int[] edge : edges) {
+            adj.get(edge[0]).add(edge[1]);
+        }
+        
+        boolean[] visited = new boolean[V];
+        int motherVertex = -1;
+        
+        // Find potential mother vertex
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfs(i, adj, visited);
+                motherVertex = i;
+            }
+        }
+        
+        // Verify mother vertex
+        visited = new boolean[V];
+        dfs(motherVertex, adj, visited);
+        
+        for (boolean v : visited) {
+            if (!v) return -1;
+        }
+        
+        return motherVertex;
+    }
+    
+    void dfs(int node, ArrayList<ArrayList<Integer>> adj, boolean[] visited) {
+        visited[node] = true;
+        
+        for (int neighbor : adj.get(node)) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, adj, visited);
+            }
+        }
+    }
+}
