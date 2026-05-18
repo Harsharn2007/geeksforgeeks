@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    public int minSteps(int[] arr, int start, int end) {
+        
+        // If already at target
+        if (start == end) return 0;
+
+        // Distance array
+        int[] dist = new int[1000];
+        Arrays.fill(dist, -1);
+
+        Queue<Integer> q = new LinkedList<>();
+
+        q.offer(start);
+        dist[start] = 0;
+
+        while (!q.isEmpty()) {
+            int curr = q.poll();
+
+            for (int num : arr) {
+                int next = (curr * num) % 1000;
+
+                // If not visited
+                if (dist[next] == -1) {
+                    dist[next] = dist[curr] + 1;
+
+                    // Reached target
+                    if (next == end) {
+                        return dist[next];
+                    }
+
+                    q.offer(next);
+                }
+            }
+        }
+
+        return -1;
+    }
+}
