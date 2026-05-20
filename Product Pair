@@ -1,0 +1,26 @@
+class Solution {
+    public boolean isProduct(int[] arr, long target) {
+        HashSet<Long> set = new HashSet<>();
+
+        for (int num : arr) {
+            // Handle target = 0 separately
+            if (num == 0) {
+                if (target == 0) return true;
+                continue;
+            }
+
+            // Check if target is divisible by current number
+            if (target % num == 0) {
+                long need = target / num;
+
+                if (set.contains(need)) {
+                    return true;
+                }
+            }
+
+            set.add((long) num);
+        }
+
+        return false;
+    }
+}
