@@ -1,0 +1,37 @@
+/* Structure for Tree Node
+class Node {
+    int data;
+    Node left, right;
+
+    // Constructor
+    Node(int val) {
+        data = val;
+        left = null;
+        right = null;
+    }
+};
+*/
+
+class Solution {
+
+    public void toSumTree(Node root) {
+        convert(root);
+    }
+
+    int convert(Node root) {
+        if (root == null) {
+            return 0;
+        }
+
+        int oldValue = root.data;
+
+        int leftSum = convert(root.left);
+        int rightSum = convert(root.right);
+
+        // Replace current node with sum of left and right subtree
+        root.data = leftSum + rightSum;
+
+        // Return total sum including original node value
+        return root.data + oldValue;
+    }
+}
