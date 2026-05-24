@@ -1,0 +1,20 @@
+class Solution {
+    public int coin(int[] arr) {
+        int left = 0;
+        int right = arr.length - 1;
+
+        // Continue removing coins until one remains
+        while (left < right) {
+            
+            // Greedy choice: remove the larger coin
+            if (arr[left] >= arr[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        // Last remaining coin
+        return arr[left];
+    }
+}
