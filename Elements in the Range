@@ -1,0 +1,22 @@
+class Solution {
+    public boolean checkElements(int start, int end, int[] arr) {
+        // Create a boolean array to mark present elements
+        boolean[] present = new boolean[end + 1];
+
+        // Mark elements that are within range
+        for (int num : arr) {
+            if (num >= start && num <= end) {
+                present[num] = true;
+            }
+        }
+
+        // Check if every element in range exists
+        for (int i = start; i <= end; i++) {
+            if (!present[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
