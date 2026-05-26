@@ -1,0 +1,29 @@
+class Solution {
+    int minToggle(int[] arr) {
+        int n = arr.length;
+
+        int[] prefix1 = new int[n + 1];
+
+        // Count prefix ones
+        for (int i = 0; i < n; i++) {
+            prefix1[i + 1] = prefix1[i] + (arr[i] == 1 ? 1 : 0);
+        }
+
+        int totalOnes = prefix1[n];
+        int ans = n;
+
+        // Try every partition
+        for (int i = 0; i <= n; i++) {
+
+            // Left side should be all 0s
+            int leftOnes = prefix1[i];
+
+            // Right side should be all 1s
+            int rightZeros = (n - i) - (totalOnes - prefix1[i]);
+
+            ans = Math.min(ans, leftOnes + rightZeros);
+        }
+
+        return ans;
+    }
+}
