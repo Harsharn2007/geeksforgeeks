@@ -1,0 +1,15 @@
+class Solution {
+    int maxSubstring(String s) {
+        int maxSoFar = -1;
+        int currSum = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            int val = (s.charAt(i) == '0') ? 1 : -1;
+
+            currSum = Math.max(val, currSum + val);
+            maxSoFar = Math.max(maxSoFar, currSum);
+        }
+
+        return maxSoFar;
+    }
+}
