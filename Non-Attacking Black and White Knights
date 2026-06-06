@@ -1,0 +1,15 @@
+class Solution:
+    def numOfWays(self, n, m):
+        cells = n * m
+
+        total_ways = cells * (cells - 1)
+
+        attacking_ways = 0
+
+        if n >= 2 and m >= 3:
+            attacking_ways += 4 * (n - 1) * (m - 2)
+
+        if n >= 3 and m >= 2:
+            attacking_ways += 4 * (n - 2) * (m - 1)
+
+        return total_ways - attacking_ways
