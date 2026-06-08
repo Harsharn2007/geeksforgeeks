@@ -1,0 +1,35 @@
+class Solution {
+public:
+    Node* reverse(Node* head) {
+        Node* prev = NULL;
+        Node* curr = head;
+
+        while (curr) {
+            Node* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    Node* compute(Node* head) {
+        // Reverse the list
+        head = reverse(head);
+
+        int maxi = head->data;
+        Node* curr = head;
+
+        while (curr && curr->next) {
+            if (curr->next->data < maxi) {
+                curr->next = curr->next->next;  // Delete node
+            } else {
+                curr = curr->next;
+                maxi = curr->data;
+            }
+        }
+
+        // Reverse again to restore order
+        return reverse(head);
+    }
+};
