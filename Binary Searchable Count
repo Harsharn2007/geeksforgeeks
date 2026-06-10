@@ -1,0 +1,23 @@
+class Solution {
+    int count;
+
+    public int binarySearchable(int[] arr) {
+        count = 0;
+        solve(arr, 0, arr.length - 1,
+              Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return count;
+    }
+
+    private void solve(int[] arr, int l, int r, int low, int high) {
+        if (l > r) return;
+
+        int mid = (l + r) / 2;
+
+        if (arr[mid] > low && arr[mid] < high) {
+            count++;
+        }
+
+        solve(arr, l, mid - 1, low, Math.min(high, arr[mid]));
+        solve(arr, mid + 1, r, Math.max(low, arr[mid]), high);
+    }
+}
