@@ -1,0 +1,28 @@
+class Solution {
+    public int findIndex(String s) {
+        int n = s.length();
+
+        int close = 0;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == ')') {
+                close++;
+            }
+        }
+
+        int open = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (open == close) {
+                return i;
+            }
+
+            if (s.charAt(i) == '(') {
+                open++;
+            } else {
+                close--;
+            }
+        }
+
+        return (open == close) ? n : -1;
+    }
+}
