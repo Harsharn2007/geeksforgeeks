@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    static ArrayList<Integer> constructList(int[][] queries) {
+        ArrayList<Integer> list = new ArrayList<>();
+        int xorVal = 0;
+
+        list.add(0);
+
+        for (int[] query : queries) {
+            int type = query[0];
+            int x = query[1];
+
+            if (type == 0) {
+                list.add(x ^ xorVal);
+            } else {
+                xorVal ^= x;
+            }
+        }
+
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        for (int val : list) {
+            ans.add(val ^ xorVal);
+        }
+
+        Collections.sort(ans);
+        return ans;
+    }
+}
