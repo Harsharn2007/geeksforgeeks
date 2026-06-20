@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int powerMod(string b, int mod) {
+        int res = 0;
+        for(char c : b)
+            res = (res * 10 + (c - '0')) % mod;
+        return res;
+    }
+
+    int getLastDigit(string a, string b) {
+        if(b == "0") return 1;
+
+        int base = (a.back() - '0') % 10;
+        int exp = powerMod(b, 4);
+
+        if(exp == 0) exp = 4;
+
+        int ans = 1;
+        while(exp--) ans = (ans * base) % 10;
+
+        return ans;
+    }
+};
