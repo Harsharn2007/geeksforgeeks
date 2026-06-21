@@ -1,0 +1,33 @@
+class Solution {
+public:
+    string chooseSwap(string s) {
+        vector<int> pos(26, -1);
+
+        // Store first occurrence of each character
+        for (int i = 0; i < s.size(); i++) {
+            if (pos[s[i] - 'a'] == -1)
+                pos[s[i] - 'a'] = i;
+        }
+
+        for (int i = 0; i < s.size(); i++) {
+            // Find a smaller character that occurs later
+            for (char ch = 'a'; ch < s[i]; ch++) {
+                if (pos[ch - 'a'] > i) {
+                    char c1 = s[i];
+                    char c2 = ch;
+
+                    for (int j = 0; j < s.size(); j++) {
+                        if (s[j] == c1)
+                            s[j] = c2;
+                        else if (s[j] == c2)
+                            s[j] = c1;
+                    }
+
+                    return s;
+                }
+            }
+        }
+
+        return s;
+    }
+};
