@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int n = height.size();
+        int left = 0, right = n - 1;
+        long long ans = 0;
+
+        while (left < right) {
+            long long width = right - left - 1; // bars between them
+            long long area = 1LL * min(height[left], height[right]) * width;
+
+            ans = max(ans, area);
+
+            if (height[left] < height[right])
+                left++;
+            else
+                right--;
+        }
+
+        return (int)ans;
+    }
+};
