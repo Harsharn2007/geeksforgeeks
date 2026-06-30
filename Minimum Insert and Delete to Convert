@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int minInsAndDel(vector<int>& a, vector<int>& b) {
+        int n = a.size();
+        int m = b.size();
+
+        // Store index of every element in b
+        unordered_map<int, int> mp;
+        for (int i = 0; i < m; i++) {
+            mp[b[i]] = i;
+        }
+
+        // Convert a into index sequence
+        vector<int> seq;
+        for (int i = 0; i < n; i++) {
+            if (mp.find(a[i]) != mp.end()) {
+                seq.push_back(mp[a[i]]);
+            }
+        }
+
+        // Find LIS of seq
+        vector<int> lis;
+
+        for (int x : seq) {
+            auto it = lower_bound(lis.begin(), lis.end(), x);
+
+            if (it == lis.end())
+                lis.push_back(x);
+            else
+                *it = x;
+        }
+
+        int lcs = lis.size();
+
+        // Minimum insertions + deletions
+        return (n - lcs) + (m - lcs);
+    }
+};
