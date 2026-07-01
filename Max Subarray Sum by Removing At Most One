@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int maxSumSubarray(vector<int>& arr) {
+        int noDelete = arr[0];
+        int oneDelete = INT_MIN;
+        int ans = arr[0];
+
+        for (int i = 1; i < arr.size(); i++) {
+            int prev = noDelete;
+
+            noDelete = max(arr[i], noDelete + arr[i]);
+
+            if (oneDelete == INT_MIN)
+                oneDelete = prev; // delete current element
+            else
+                oneDelete = max(oneDelete + arr[i], prev);
+
+            ans = max(ans, max(noDelete, oneDelete));
+        }
+
+        return ans;
+    }
+};
