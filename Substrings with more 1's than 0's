@@ -1,0 +1,64 @@
+class Solution {
+public:
+    class FenwickTree {
+    public:
+        vector<int> bit;
+        int n;
+
+        FenwickTree(int size) {
+            n = size;
+            bit.assign(n + 1, 0);
+        }
+
+        void update(int index, int value) {
+            while (index <= n) {
+                bit[index] += value;
+                index += index & (-index);
+            }
+        }
+
+        int query(int index) {
+            int sum = 0;
+            while (index > 0) {
+                sum += bit[index];
+                index -= index & (-index);
+            }
+            return sum;
+        }
+    };
+
+    long long countSubstring(string s) {
+        int n = s.size();
+
+        // Step 1: Compute prefix sums
+        vector<int> prefix(n + 1, 0);
+        for (int i = 1; i <= n; i++) {
+            if (s[i - 1] == '1')
+                prefix[i] = prefix[i - 1] + 1;
+            else
+                prefix[i] = prefix[i - 1] - 1;
+        }
+
+        // Step 2: Coordinate Compression
+        vector<int> values = prefix;
+        sort(values.begin(), values.end());
+        values.erase(unique(values.begin(), values.end()), values.end());
+
+        FenwickTree ft(values.size());
+
+        long long ans = 0;
+
+        // Step 3: Count valid substrings
+        for (int x : prefix) {
+            int idx = lower_bound(values.begin(), values.end(), x) - values.begin() + 1;
+
+            // Count previous prefix sums smaller than current
+            ans += ft.query(idx - 1);
+
+            // Insert current prefix sum
+            ft.update(idx, 1);
+        }
+
+        return ans;
+    }
+};
