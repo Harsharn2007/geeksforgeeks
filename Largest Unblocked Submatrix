@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int maxGap(vector<int>& blocked, int limit) {
+        if (blocked.empty()) return limit;
+
+        sort(blocked.begin(), blocked.end());
+
+        int ans = blocked[0] - 1;
+
+        for (int i = 1; i < blocked.size(); i++) {
+            ans = max(ans, blocked[i] - blocked[i - 1] - 1);
+        }
+
+        ans = max(ans, limit - blocked.back());
+
+        return ans;
+    }
+
+    int largestArea(int n, int m, vector<vector<int>>& mat) {
+        vector<int> rows, cols;
+
+        for (auto &cell : mat) {
+            rows.push_back(cell[0]);
+            cols.push_back(cell[1]);
+        }
+
+        int maxRows = maxGap(rows, n);
+        int maxCols = maxGap(cols, m);
+
+        return maxRows * maxCols;
+    }
+};
