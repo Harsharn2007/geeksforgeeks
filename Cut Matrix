@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int findWays(vector<vector<int>>& matrix, int k) {
+        const long long MOD = 1000000007LL;
+        int n = matrix.size();
+        int m = n ? matrix[0].size() : 0;
+
+        // 2D prefix sums
+        vector<vector<int>> S(n+1, vector<int>(m+1, 0));
+        for (int i = 0; i < n; i++) {
+            int rowSum = 0;
+            for (int j = 0; j < m; j++) {
+                rowSum += matrix[i][j];
+                S[i+1][j+1] = S[i][j+1] + rowSum;
+            }
+        }
+
+        auto ones = [&](int top, int left, int bottom, int right) -> int {
+            return S[bottom][right] - S[top][right] - S[bottom][left] + S[top][left];
+        };
+
+        int INF = n + m + 10;
+
+        // Thresh_h[top][left] = min i in (top,n] with ones(top,left,i,m) > 0
+        vector<vector<int>> Thresh_h(n, vector<int>(m, INF));
+        for (int left = 0; left < m; left++) {
+            for (int top = 0; top < n; top++) {
+                if (ones(top, left, n, m) == 0) continue;
+                int lo = top+1, hi = n;
+                while (lo < hi) {
+                    int mid = (lo+hi)/2;
+                    if (ones(top, left, mid, m) > 0) hi = mid;
+                    else lo = mid+1;
+                }
+                Thresh_h[top][left] = lo;
+            }
+        }
+
+        // Thresh_v[top][left] = min j in (left,m] with ones(top,left,n,j) > 0
+        vector<vector<int>> Thresh_v(n, vector<int>(m, INF));
+        for (int top = 0; top < n; top++) {
+            for (int left = 0; left < m; left++) {
+                if (ones(top, left, n, m) == 0) continue;
+                int lo = left+1, hi = m;
+                while (lo < hi) {
+                    int mid = (lo+hi)/2;
+                    if (ones(top, left, n, mid) > 0) hi = mid;
+                    else lo = mid+1;
+                }
+                Thresh_v[top][left] = lo;
+            }
+        }
+
+        // r = 1 base layer
+        vector<vector<long long>> dp_prev(n, vector<long long>(m, 0));
+        for (int top = 0; top < n; top++)
+            for (int left = 0; left < m; left++)
+                dp_prev[top][left] = (ones(top, left, n, m) > 0) ? 1 : 0;
+
+        if (k == 1) return (int)(dp_prev[0][0] % MOD);
+
+        for (int r = 2; r <= k; r++) {
+            // SufH[left][i] = sum_{i'>=i} dp_prev[i'][left]
+            vector<vector<long long>> SufH(m, vector<long long>(n+1, 0));
+            for (int left = 0; left < m; left++) {
+                long long acc = 0;
+                for (int i = n-1; i >= 0; i--) {
+                    acc = (acc + dp_prev[i][left]) % MOD;
+                    SufH[left][i] = acc;
+                }
+            }
+
+            // SufV[top][j] = sum_{j'>=j} dp_prev[top][j']
+            vector<vector<long long>> SufV(n, vector<long long>(m+1, 0));
+            for (int top = 0; top < n; top++) {
+                long long acc = 0;
+                for (int j = m-1; j >= 0; j--) {
+                    acc = (acc + dp_prev[top][j]) % MOD;
+                    SufV[top][j] = acc;
+                }
+            }
+
+            vector<vector<long long>> dp_cur(n, vector<long long>(m, 0));
+            for (int top = 0; top < n; top++) {
+                for (int left = 0; left < m; left++) {
+                    long long total = 0;
+                    int th = Thresh_h[top][left];
+                    if (th <= n-1) total += SufH[left][th];
+                    int tv = Thresh_v[top][left];
+                    if (tv <= m-1) total += SufV[top][tv];
+                    dp_cur[top][left] = total % MOD;
+                }
+            }
+
+            dp_prev = dp_cur;
+        }
+
+        return (int)(dp_prev[0][0] % MOD);
+    }
+};
