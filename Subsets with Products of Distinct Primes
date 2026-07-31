@@ -1,0 +1,83 @@
+class Solution {
+public:
+    static const int MOD = 1000000007;
+
+    int countSubsets(vector<int>& arr) {
+
+        vector<int> freq(31, 0);
+        for (int x : arr) freq[x]++;
+
+        vector<int> primes = {2,3,5,7,11,13,17,19,23,29};
+
+        // mask[i] = prime factor mask of i, -1 if not square-free
+        vector<int> mask(31, -1);
+
+        for (int x = 2; x <= 30; x++) {
+            int t = x;
+            int m = 0;
+            bool ok = true;
+
+            for (int i = 0; i < 10; i++) {
+                int cnt = 0;
+                while (t % primes[i] == 0) {
+                    cnt++;
+                    t /= primes[i];
+                }
+                if (cnt > 1) {
+                    ok = false;
+                    break;
+                }
+                if (cnt == 1)
+                    m |= (1 << i);
+            }
+
+            if (ok && t == 1)
+                mask[x] = m;
+        }
+
+        vector<long long> dp(1 << 10, 0);
+        dp[0] = 1;
+
+        for (int x = 2; x <= 30; x++) {
+
+            if (freq[x] == 0 || mask[x] == -1)
+                continue;
+
+            vector<long long> ndp = dp;
+
+            for (int s = 0; s < (1 << 10); s++) {
+
+                if (dp[s] == 0) continue;
+
+                if ((s & mask[x]) == 0) {
+
+                    ndp[s | mask[x]] =
+                        (ndp[s | mask[x]] + dp[s] * freq[x]) % MOD;
+                }
+            }
+
+            dp = ndp;
+        }
+
+        long long ans = 0;
+
+        for (int s = 1; s < (1 << 10); s++)
+            ans = (ans + dp[s]) % MOD;
+
+        // Multiply by 2^(count of ones)
+        long long mul = 1;
+        long long base = 2;
+        int exp = freq[1];
+
+        while (exp) {
+            if (exp & 1)
+                mul = (mul * base) % MOD;
+            base = (base * base) % MOD;
+            exp >>= 1;
+        }
+
+        ans = (ans * mul) % MOD;
+
+        return (int)ans;
+    }
+};
