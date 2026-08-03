@@ -1,0 +1,34 @@
+class Solution {
+    public int maxSumWithK(int[] arr, int k) {
+        int n = arr.length;
+
+        // maxEndHere[i] = maximum subarray sum ending at i
+        int[] maxEndHere = new int[n];
+        maxEndHere[0] = arr[0];
+
+        for (int i = 1; i < n; i++) {
+            maxEndHere[i] = Math.max(arr[i], arr[i] + maxEndHere[i - 1]);
+        }
+
+        // Sum of first k elements
+        int windowSum = 0;
+        for (int i = 0; i < k; i++) {
+            windowSum += arr[i];
+        }
+
+        int ans = windowSum;
+
+        // Slide the window
+        for (int i = k; i < n; i++) {
+            windowSum += arr[i] - arr[i - k];
+
+            // Subarray of exactly k elements
+            ans = Math.max(ans, windowSum);
+
+            // Extend using previous maximum ending subarray
+            ans = Math.max(ans, windowSum + maxEndHere[i - k]);
+        }
+
+        return ans;
+    }
+}
