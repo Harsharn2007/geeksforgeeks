@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int countMinOperations(vector<int>& arr) {
+        int operations = 0;
+
+        while (true) {
+            bool allZero = true;
+
+            // Remove all odd values
+            for (int &x : arr) {
+                if (x & 1) {
+                    x--;
+                    operations++;
+                }
+                if (x != 0)
+                    allZero = false;
+            }
+
+            if (allZero)
+                break;
+
+            // Divide all elements by 2
+            for (int &x : arr)
+                x /= 2;
+
+            operations++;
+        }
+
+        return operations;
+    }
+};
