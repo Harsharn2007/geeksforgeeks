@@ -1,0 +1,45 @@
+class Solution {
+public:
+    vector<int> parent, rnk;
+    
+    int find(int x) {
+        while (parent[x] != x) {
+            parent[x] = parent[parent[x]]; // path compression
+            x = parent[x];
+        }
+        return x;
+    }
+    
+    bool unite(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return false; // already connected -> redundant edge
+        if (rnk[px] < rnk[py]) swap(px, py);
+        parent[py] = px;
+        if (rnk[px] == rnk[py]) rnk[px]++;
+        return true;
+    }
+    
+    int minEdgesReq(int n, vector<vector<int>>& edges) {
+        int m = edges.size();
+        if (m < n - 1) return -1; // not enough edges to connect
+        
+        parent.resize(n);
+        rnk.assign(n, 0);
+        for (int i = 0; i < n; i++) parent[i] = i;
+        
+        int redundant = 0;
+        for (auto& e : edges) {
+            if (!unite(e[0], e[1])) redundant++;
+        }
+        
+        // count components
+        int components = 0;
+        for (int i = 0; i < n; i++) {
+            if (find(i) == i) components++;
+        }
+        
+        int needed = components - 1;
+        if (redundant >= needed) return needed;
+        return -1;
+    }
+};
