@@ -1,0 +1,45 @@
+class Solution {
+public:
+    bool isPossible(vector<int>& arr, int s, int x) {
+        // dp stores all achievable sums <= x
+        unordered_set<long long> dp;
+        dp.insert(0);
+
+        long long currentSum = s;
+
+        // The initial number written on the paper
+        if (s <= x) {
+            dp.insert(s);
+        }
+
+        if (s == x)
+            return true;
+
+        for (int a : arr) {
+            long long next = currentSum + a;
+
+            // All future numbers will be even larger
+            if (next > x)
+                break;
+
+            vector<long long> newSums;
+
+            for (long long sum : dp) {
+                if (sum + next <= x) {
+                    newSums.push_back(sum + next);
+                }
+            }
+
+            for (long long sum : newSums) {
+                if (sum == x)
+                    return true;
+
+                dp.insert(sum);
+            }
+
+            currentSum += next;
+        }
+
+        return dp.count(x);
+    }
+};
