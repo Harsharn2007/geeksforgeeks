@@ -1,0 +1,43 @@
+class Solution {
+public:
+    int len;
+    int d;
+    int memo[12][2][2];
+    bool visited[12][2][2];
+    string s;
+
+    int dp(int pos, bool tight, bool started) {
+        if (pos == len) return 1;
+        if (visited[pos][tight][started]) return memo[pos][tight][started];
+        visited[pos][tight][started] = true;
+
+        int limit = tight ? (s[pos] - '0') : 9;
+        int total = 0;
+
+        for (int dig = 0; dig <= limit; dig++) {
+            bool ntight = tight && (dig == limit);
+            if (!started) {
+                if (dig == 0) {
+                    total += dp(pos + 1, ntight, false);
+                } else if (dig != d) {
+                    total += dp(pos + 1, ntight, true);
+                }
+            } else {
+                if (dig != d) {
+                    total += dp(pos + 1, ntight, true);
+                }
+            }
+        }
+        return memo[pos][tight][started] = total;
+    }
+
+    int countWithout(int n, int digit) {
+        if (n == 0) return 0;
+        s = to_string(n);
+        len = s.size();
+        d = digit;
+        memset(visited, false, sizeof(visited));
+        int result = dp(0, true, false);
+        return result - 1; // exclude count for number 0
+    }
+};
