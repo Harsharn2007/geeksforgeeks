@@ -1,0 +1,33 @@
+class Solution:
+    def stoneGameV(self, stoneValue):
+        n = len(stoneValue)
+        prefix = [0] * (n + 1)
+        for i in range(n):
+            prefix[i + 1] = prefix[i] + stoneValue[i]
+
+        def rangeSum(i, j):  # sum of stoneValue[i..j]
+            return prefix[j + 1] - prefix[i]
+
+        memo = {}
+
+        def dp(i, j):
+            if i == j:
+                return 0
+            if (i, j) in memo:
+                return memo[(i, j)]
+
+            best = 0
+            for k in range(i, j):
+                left = rangeSum(i, k)
+                right = rangeSum(k + 1, j)
+                if left < right:
+                    best = max(best, left + dp(i, k))
+                elif left > right:
+                    best = max(best, right + dp(k + 1, j))
+                else:
+                    best = max(best, left + max(dp(i, k), dp(k + 1, j)))
+
+            memo[(i, j)] = best
+            return best
+
+        return dp(0, n - 1)
