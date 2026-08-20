@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int ans = INT_MIN;
+
+    int dfs(Node* root) {
+        if (root == NULL)
+            return INT_MAX;
+
+        // Find minimum value in left and right subtree
+        int leftMin = dfs(root->left);
+        int rightMin = dfs(root->right);
+
+        int descendantMin = min(leftMin, rightMin);
+
+        // Compare current node with its descendants
+        if (descendantMin != INT_MAX) {
+            ans = max(ans, root->data - descendantMin);
+        }
+
+        // Return minimum value from this subtree
+        return min(root->data, descendantMin);
+    }
+
+    int maxDiff(Node* root) {
+        dfs(root);
+        return ans;
+    }
+};
