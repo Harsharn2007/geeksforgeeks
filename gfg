@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int transform(string s1, string s2) {
+        int n = s1.length();
+
+        if (n != s2.length())
+            return -1;
+
+        // Check whether both strings contain the same characters
+        vector<int> freq(256, 0);
+
+        for (char c : s1)
+            freq[c]++;
+
+        for (char c : s2)
+            freq[c]--;
+
+        for (int x : freq) {
+            if (x != 0)
+                return -1;
+        }
+
+        int i = n - 1;
+        int j = n - 1;
+        int ans = 0;
+
+        while (i >= 0) {
+            if (s1[i] == s2[j]) {
+                // This character can remain in place
+                i--;
+                j--;
+            } else {
+                // This character must be moved to the front
+                ans++;
+                i--;
+            }
+        }
+
+        return ans;
+    }
+};
