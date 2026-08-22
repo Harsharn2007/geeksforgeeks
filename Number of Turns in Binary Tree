@@ -1,0 +1,66 @@
+class Solution {
+public:
+
+    bool findPath(Node* root, int value, vector<Node*>& path) {
+        if (root == nullptr)
+            return false;
+
+        path.push_back(root);
+
+        if (root->data == value)
+            return true;
+
+        if (findPath(root->left, value, path) ||
+            findPath(root->right, value, path))
+            return true;
+
+        path.pop_back();
+        return false;
+    }
+
+    int numberOfTurns(Node* root, int p, int q) {
+
+        vector<Node*> pathP, pathQ;
+
+        findPath(root, p, pathP);
+        findPath(root, q, pathQ);
+
+        // Find LCA
+        int i = 0;
+
+        while (i < pathP.size() &&
+               i < pathQ.size() &&
+               pathP[i] == pathQ[i]) {
+            i++;
+        }
+
+        int lca = i - 1;
+
+        vector<int> directions;
+
+        // p -> LCA
+        for (int j = pathP.size() - 1; j > lca; j--) {
+            if (pathP[j - 1]->left == pathP[j])
+                directions.push_back(0);
+            else
+                directions.push_back(1);
+        }
+
+        // LCA -> q
+        for (int j = lca + 1; j < pathQ.size(); j++) {
+            if (pathQ[j - 1]->left == pathQ[j])
+                directions.push_back(0);
+            else
+                directions.push_back(1);
+        }
+
+        int turns = 0;
+
+        for (int j = 1; j < directions.size(); j++) {
+            if (directions[j] != directions[j - 1])
+                turns++;
+        }
+
+        return turns == 0 ? -1 : turns;
+    }
+};
