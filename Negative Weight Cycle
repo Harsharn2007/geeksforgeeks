@@ -1,0 +1,47 @@
+class Solution {
+    public boolean isNegativeWeightCycle(int V, int[][] edges) {
+
+        long[] dist = new long[V];
+
+        // Initially all distances are 0
+        // This allows us to detect cycles in any component.
+
+        // Relax all edges V-1 times
+        for (int i = 0; i < V - 1; i++) {
+
+            boolean updated = false;
+
+            for (int[] edge : edges) {
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    updated = true;
+                }
+            }
+
+            // No update means no negative cycle
+            if (!updated) {
+                break;
+            }
+        }
+
+        // V-th relaxation
+        // If any distance can still decrease,
+        // there is a negative weight cycle.
+        for (int[] edge : edges) {
+
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+
+            if (dist[u] + w < dist[v]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
