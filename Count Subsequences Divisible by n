@@ -1,0 +1,42 @@
+class Solution {
+    static final int MOD = 1_000_000_007;
+
+    public int countSubsequences(String s, int n) {
+
+        long[] dp = new long[n];
+
+        for (char ch : s.toCharArray()) {
+
+            int digit = ch - '0';
+
+            // Copy existing subsequences
+            long[] newDp = dp.clone();
+
+            // Create a subsequence consisting of only this digit
+            newDp[digit % n]++;
+
+            if (newDp[digit % n] >= MOD) {
+                newDp[digit % n] -= MOD;
+            }
+
+            // Append current digit to every existing subsequence
+            for (int r = 0; r < n; r++) {
+
+                if (dp[r] == 0)
+                    continue;
+
+                int newRemainder = (r * 10 + digit) % n;
+
+                newDp[newRemainder] += dp[r];
+
+                if (newDp[newRemainder] >= MOD) {
+                    newDp[newRemainder] -= MOD;
+                }
+            }
+
+            dp = newDp;
+        }
+
+        return (int) dp[0];
+    }
+}
