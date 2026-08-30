@@ -1,0 +1,51 @@
+class Solution {
+    public java.util.List<Integer> getMarks(int[] l, int[] r, int[] rank) {
+        int n = l.length;
+
+        long[] prefix = new long[n];
+
+        // Build prefix sum of number of valid marks
+        for (int i = 0; i < n; i++) {
+            long count = (long) r[i] - l[i] + 1;
+
+            if (i == 0) {
+                prefix[i] = count;
+            } else {
+                prefix[i] = prefix[i - 1] + count;
+            }
+        }
+
+        java.util.List<Integer> ans = new java.util.ArrayList<>();
+
+        for (int k : rank) {
+
+            // Binary search for first prefix >= k
+            int low = 0;
+            int high = n - 1;
+
+            while (low < high) {
+                int mid = low + (high - low) / 2;
+
+                if (prefix[mid] >= k) {
+                    high = mid;
+                } else {
+                    low = mid + 1;
+                }
+            }
+
+            int i = low;
+
+            // Number of marks before current interval
+            long previous = (i == 0) ? 0 : prefix[i - 1];
+
+            // Position of rank inside current interval
+            long position = k - previous;
+
+            int mark = (int)(l[i] + position - 1);
+
+            ans.add(mark);
+        }
+
+        return ans;
+    }
+}
