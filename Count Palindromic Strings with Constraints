@@ -1,0 +1,47 @@
+class Solution {
+
+    static final long MOD = 1000000007;
+
+    public int palindromicStrings(int n, int k) {
+
+        long ans = 0;
+
+        // perm[i] = number of ways to choose and arrange
+        // i different characters from k characters
+        long[] perm = new long[k + 1];
+
+        perm[0] = 1;
+
+        for (int i = 1; i <= k; i++) {
+            perm[i] = (perm[i - 1] * (k - i + 1)) % MOD;
+        }
+
+        // Odd lengths
+        // length = 1, 3, 5, ...
+        for (int len = 1; len <= n; len += 2) {
+
+            int half = len / 2;
+
+            // Choose the middle character
+            long ways = k;
+
+            // Choose and arrange characters for the first half
+            for (int i = 0; i < half; i++) {
+                ways = (ways * (k - 1 - i)) % MOD;
+            }
+
+            ans = (ans + ways) % MOD;
+        }
+
+        // Even lengths
+        // length = 2, 4, 6, ...
+        for (int len = 2; len <= n; len += 2) {
+
+            int half = len / 2;
+
+            ans = (ans + perm[half]) % MOD;
+        }
+
+        return (int) ans;
+    }
+}
