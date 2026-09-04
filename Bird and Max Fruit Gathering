@@ -1,0 +1,37 @@
+import java.util.*;
+
+class Solution {
+    public int maxFruits(ArrayList<Integer> arr, int m) {
+        int n = arr.size();
+
+        // If m >= n, bird can collect all fruits
+        if (m >= n) {
+            int total = 0;
+
+            for (int x : arr) {
+                total += x;
+            }
+
+            return total;
+        }
+
+        // First window
+        int windowSum = 0;
+
+        for (int i = 0; i < m; i++) {
+            windowSum += arr.get(i);
+        }
+
+        int maxSum = windowSum;
+
+        // Sliding window around the circle
+        for (int i = m; i < n + m; i++) {
+            windowSum += arr.get(i % n);
+            windowSum -= arr.get((i - m) % n);
+
+            maxSum = Math.max(maxSum, windowSum);
+        }
+
+        return maxSum;
+    }
+}
