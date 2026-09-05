@@ -1,0 +1,22 @@
+import java.util.HashMap;
+
+class Solution {
+    public int longestSubseq(int[] arr) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        int answer = 0;
+
+        for (int x : arr) {
+            int left = map.getOrDefault(x - 1, 0);
+            int right = map.getOrDefault(x + 1, 0);
+
+            int current = Math.max(left, right) + 1;
+
+            map.put(x, Math.max(map.getOrDefault(x, 0), current));
+
+            answer = Math.max(answer, map.get(x));
+        }
+
+        return answer;
+    }
+}
