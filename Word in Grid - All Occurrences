@@ -1,0 +1,69 @@
+import java.util.*;
+
+class Solution {
+
+    public ArrayList<ArrayList<Integer>> searchWord(char[][] mat, String word) {
+
+        int n = mat.length;
+        int m = mat[0].length;
+
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+
+        // 8 directions
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                // First character should match
+                if (mat[i][j] != word.charAt(0)) {
+                    continue;
+                }
+
+                // Check all 8 directions
+                for (int d = 0; d < 8; d++) {
+
+                    if (check(mat, word, i, j, dx[d], dy[d])) {
+
+                        ArrayList<Integer> position = new ArrayList<>();
+                        position.add(i);
+                        position.add(j);
+
+                        ans.add(position);
+
+                        // Avoid adding same starting cell again
+                        break;
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    private boolean check(char[][] mat, String word,
+                          int x, int y, int dx, int dy) {
+
+        int n = mat.length;
+        int m = mat[0].length;
+
+        for (int k = 0; k < word.length(); k++) {
+
+            int nx = x + k * dx;
+            int ny = y + k * dy;
+
+            // Out of bounds
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
+                return false;
+            }
+
+            // Character mismatch
+            if (mat[nx][ny] != word.charAt(k)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
