@@ -1,0 +1,51 @@
+class Solution {
+
+    public int findMax(int n) {
+
+        int ans = n;
+        int maxSum = digitSum(n);
+
+        String s = String.valueOf(n);
+
+        for (int i = 0; i < s.length(); i++) {
+
+            if (s.charAt(i) == '0')
+                continue;
+
+            // Decrease this digit by 1
+            StringBuilder sb = new StringBuilder(s);
+
+            sb.setCharAt(i, (char)(sb.charAt(i) - 1));
+
+            // Make all digits after it 9
+            for (int j = i + 1; j < s.length(); j++) {
+                sb.setCharAt(j, '9');
+            }
+
+            int candidate = Integer.parseInt(sb.toString());
+
+            int sum = digitSum(candidate);
+
+            if (sum > maxSum ||
+               (sum == maxSum && candidate > ans)) {
+
+                maxSum = sum;
+                ans = candidate;
+            }
+        }
+
+        return ans;
+    }
+
+    private int digitSum(int n) {
+
+        int sum = 0;
+
+        while (n > 0) {
+            sum += n % 10;
+            n /= 10;
+        }
+
+        return sum;
+    }
+}
