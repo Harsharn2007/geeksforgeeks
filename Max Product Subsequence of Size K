@@ -1,0 +1,30 @@
+class Solution:
+    def maxProduct(self, arr, k):
+        n = len(arr)
+
+        # dp[j] = [maximum product, minimum product]
+        dp = [[None, None] for _ in range(k + 1)]
+
+        dp[0] = [1, 1]
+
+        for x in arr:
+            # Go backwards so each element is used only once
+            for j in range(k, 0, -1):
+
+                if dp[j - 1][0] is not None:
+                    candidates = [
+                        x * dp[j - 1][0],
+                        x * dp[j - 1][1]
+                    ]
+
+                    current_max = max(candidates)
+                    current_min = min(candidates)
+
+                    if dp[j][0] is None:
+                        dp[j][0] = current_max
+                        dp[j][1] = current_min
+                    else:
+                        dp[j][0] = max(dp[j][0], current_max)
+                        dp[j][1] = min(dp[j][1], current_min)
+
+        return dp[k][0]
