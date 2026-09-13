@@ -1,0 +1,44 @@
+class Solution {
+  public:
+    int partyHouse(vector<vector<int>>& adj) {
+        int n = adj.size();
+
+        // Returns {farthest_node, maximum_distance}
+        auto bfs = [&](int start) {
+            vector<int> dist(n + 1, -1);
+            queue<int> q;
+
+            q.push(start);
+            dist[start] = 0;
+
+            int farthest = start;
+
+            while (!q.empty()) {
+                int node = q.front();
+                q.pop();
+
+                for (int next : adj[node - 1]) {
+                    if (dist[next] == -1) {
+                        dist[next] = dist[node] + 1;
+                        q.push(next);
+
+                        if (dist[next] > dist[farthest]) {
+                            farthest = next;
+                        }
+                    }
+                }
+            }
+
+            return pair<int, int>{farthest, dist[farthest]};
+        };
+
+        // Step 1: Find one endpoint of diameter
+        int A = bfs(1).first;
+
+        // Step 2: Find the other endpoint and diameter length
+        int diameter = bfs(A).second;
+
+        // Radius = ceil(diameter / 2)
+        return (diameter + 1) / 2;
+    }
+};
