@@ -1,0 +1,39 @@
+class Solution {
+public:
+
+    void findLeaves(Node* root, int level, vector<int>& costs) {
+        if (root == NULL)
+            return;
+
+        // Leaf node
+        if (root->left == NULL && root->right == NULL) {
+            costs.push_back(level);
+            return;
+        }
+
+        findLeaves(root->left, level + 1, costs);
+        findLeaves(root->right, level + 1, costs);
+    }
+
+    int getCount(Node* root, int k) {
+        vector<int> costs;
+
+        // Root is at level 1
+        findLeaves(root, 1, costs);
+
+        // Cheapest leaves first
+        sort(costs.begin(), costs.end());
+
+        int count = 0;
+
+        for (int cost : costs) {
+            if (cost > k)
+                break;
+
+            k -= cost;
+            count++;
+        }
+
+        return count;
+    }
+};
