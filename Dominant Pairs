@@ -1,0 +1,35 @@
+class Solution {
+public:
+    int dominantPairs(vector<int>& arr) {
+        int n = arr.size();
+        int mid = n / 2;
+
+        vector<int> second(arr.begin() + mid, arr.end());
+
+        sort(second.begin(), second.end());
+
+        long long ans = 0;
+
+        for (int i = 0; i < mid; i++) {
+            int left = 0;
+            int right = mid;
+
+            // Find first position where
+            // 5 * second[pos] > arr[i]
+            while (left < right) {
+                int m = left + (right - left) / 2;
+
+                if (5LL * second[m] <= arr[i]) {
+                    left = m + 1;
+                } else {
+                    right = m;
+                }
+            }
+
+            // [0, left-1] are valid
+            ans += left;
+        }
+
+        return (int)ans;
+    }
+};
