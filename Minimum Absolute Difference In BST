@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int ans;
+    int prev;
+
+    void inorder(Node* root) {
+        if (root == NULL)
+            return;
+
+        inorder(root->left);
+
+        if (prev != -1) {
+            ans = min(ans, root->data - prev);
+        }
+
+        prev = root->data;
+
+        inorder(root->right);
+    }
+
+    int absDiff(Node* root) {
+        ans = INT_MAX;
+        prev = -1;
+
+        inorder(root);
+
+        return ans;
+    }
+};
