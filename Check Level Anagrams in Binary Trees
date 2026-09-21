@@ -1,0 +1,62 @@
+class Solution {
+
+    public boolean areAnagrams(Node root1, Node root2) {
+
+        Queue<Node> q1 = new LinkedList<>();
+        Queue<Node> q2 = new LinkedList<>();
+
+        q1.add(root1);
+        q2.add(root2);
+
+        while (!q1.isEmpty() && !q2.isEmpty()) {
+
+            int size1 = q1.size();
+            int size2 = q2.size();
+
+            // Different number of nodes at this level
+            if (size1 != size2) {
+                return false;
+            }
+
+            ArrayList<Integer> level1 = new ArrayList<>();
+            ArrayList<Integer> level2 = new ArrayList<>();
+
+            for (int i = 0; i < size1; i++) {
+
+                Node curr1 = q1.poll();
+                Node curr2 = q2.poll();
+
+                level1.add(curr1.data);
+                level2.add(curr2.data);
+
+                if (curr1.left != null) {
+                    q1.add(curr1.left);
+                }
+
+                if (curr1.right != null) {
+                    q1.add(curr1.right);
+                }
+
+                if (curr2.left != null) {
+                    q2.add(curr2.left);
+                }
+
+                if (curr2.right != null) {
+                    q2.add(curr2.right);
+                }
+            }
+
+            // Sort both levels
+            Collections.sort(level1);
+            Collections.sort(level2);
+
+            // Compare
+            if (!level1.equals(level2)) {
+                return false;
+            }
+        }
+
+        // Both trees must finish together
+        return q1.isEmpty() && q2.isEmpty();
+    }
+}
