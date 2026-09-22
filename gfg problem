@@ -1,0 +1,63 @@
+class Solution {
+
+    public String findLongestWord(String s, List<String> d) {
+
+        int n = s.length();
+
+        // next[i][c] = next position >= i containing character c
+        int[][] next = new int[n + 1][26];
+
+        // At n, no character exists
+        for (int c = 0; c < 26; c++) {
+            next[n][c] = -1;
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+
+            // Copy values from i + 1
+            for (int c = 0; c < 26; c++) {
+                next[i][c] = next[i + 1][c];
+            }
+
+            next[i][s.charAt(i) - 'a'] = i;
+        }
+
+        String answer = "";
+
+        for (String word : d) {
+
+            if (isSubsequence(word, next, n)) {
+
+                if (word.length() > answer.length() ||
+                    (word.length() == answer.length()
+                     && word.compareTo(answer) < 0)) {
+
+                    answer = word;
+                }
+            }
+        }
+
+        return answer;
+    }
+
+    private boolean isSubsequence(
+            String word,
+            int[][] next,
+            int n) {
+
+        int pos = 0;
+
+        for (int i = 0; i < word.length(); i++) {
+
+            int ch = word.charAt(i) - 'a';
+
+            if (pos > n || next[pos][ch] == -1) {
+                return false;
+            }
+
+            pos = next[pos][ch] + 1;
+        }
+
+        return true;
+    }
+}
