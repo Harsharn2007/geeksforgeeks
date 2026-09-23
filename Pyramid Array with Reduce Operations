@@ -1,0 +1,50 @@
+class Solution {
+    public long formPyramid(int[] arr) {
+        int n = arr.length;
+
+        long[] left = new long[n];
+        long[] right = new long[n];
+
+        // Maximum possible height at each index from the left
+        left[0] = 1;
+
+        for (int i = 1; i < n; i++) {
+            left[i] = Math.min((long) arr[i], left[i - 1] + 1);
+        }
+
+        // Maximum possible height at each index from the right
+        right[n - 1] = 1;
+
+        for (int i = n - 2; i >= 0; i--) {
+            right[i] = Math.min((long) arr[i], right[i + 1] + 1);
+        }
+
+        long totalSum = 0;
+        long maxPyramidSum = 0;
+
+        for (int x : arr) {
+            totalSum += x;
+        }
+
+        // Try every index as the peak
+        for (int i = 0; i < n; i++) {
+            long peak = Math.min(left[i], right[i]);
+
+            // Left side: 1 + 2 + ... + peak
+            long leftLength = Math.min(peak, i + 1L);
+            long leftSum = leftLength * (leftLength + 1) / 2;
+
+            // Right side: peak + ... + 2 + 1
+            long rightLength = Math.min(peak, n - i);
+            long rightSum = rightLength * (rightLength + 1) / 2;
+
+            // Peak counted twice
+            long pyramidSum = leftSum + rightSum - peak;
+
+            maxPyramidSum = Math.max(maxPyramidSum, pyramidSum);
+        }
+
+        // Cost = original stones - stones remaining in pyramid
+        return totalSum - maxPyramidSum;
+    }
+}
