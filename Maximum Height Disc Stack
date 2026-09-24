@@ -1,0 +1,95 @@
+import java.util.*;
+
+class Solution {
+
+    static class Disc {
+        int r, h;
+
+        Disc(int r, int h) {
+            this.r = r;
+            this.h = h;
+        }
+    }
+
+    public int maxStackHeight(int[] r, int[] h) {
+
+        int n = r.length;
+
+        Disc[] discs = new Disc[n];
+
+        for (int i = 0; i < n; i++) {
+            discs[i] = new Disc(r[i], h[i]);
+        }
+
+        // Sort by radius
+        Arrays.sort(discs, (a, b) -> {
+            if (a.r != b.r) {
+                return Integer.compare(a.r, b.r);
+            }
+            return Integer.compare(a.h, b.h);
+        });
+
+        // Fenwick Tree for maximum height
+        int[] bit = new int[1002];
+
+        int answer = 0;
+        int i = 0;
+
+        while (i < n) {
+
+            int j = i;
+
+            // Group discs having the same radius
+            while (j < n && discs[j].r == discs[i].r) {
+                j++;
+            }
+
+            int[] best = new int[j - i];
+
+            // Query first
+            for (int k = i; k < j; k++) {
+
+                int height = discs[k].h;
+
+                // Only strictly smaller height is allowed
+                int below = query(bit, height - 1);
+
+                best[k - i] = below + height;
+
+                answer = Math.max(answer, best[k - i]);
+            }
+
+            // Update after processing same-radius discs
+            for (int k = i; k < j; k++) {
+
+                int height = discs[k].h;
+
+                update(bit, height, best[k - i]);
+            }
+
+            i = j;
+        }
+
+        return answer;
+    }
+
+    static int query(int[] bit, int index) {
+
+        int result = 0;
+
+        while (index > 0) {
+            result = Math.max(result, bit[index]);
+            index -= index & -index;
+        }
+
+        return result;
+    }
+
+    static void update(int[] bit, int index, int value) {
+
+        while (index < bit.length) {
+            bit[index] = Math.max(bit[index], value);
+            index += index & -index;
+        }
+    }
+}
