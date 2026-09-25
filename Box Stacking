@@ -1,0 +1,96 @@
+import java.util.*;
+
+class Solution {
+
+    static class Box {
+        int h;
+        int w;
+        int l;
+
+        Box(int h, int w, int l) {
+            this.h = h;
+            this.w = w;
+            this.l = l;
+        }
+    }
+
+    List<Box> boxes = new ArrayList<>();
+    Map<String, Integer> memo = new HashMap<>();
+
+    public int maxHeight(int[] height, int[] width, int[] length) {
+
+        int n = height.length;
+
+        // Generate all 3 rotations
+        for (int i = 0; i < n; i++) {
+
+            // height = height[i]
+            addBox(
+                height[i],
+                width[i],
+                length[i]
+            );
+
+            // height = width[i]
+            addBox(
+                width[i],
+                height[i],
+                length[i]
+            );
+
+            // height = length[i]
+            addBox(
+                length[i],
+                height[i],
+                width[i]
+            );
+        }
+
+        return dfs(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+
+    // Make the larger base dimension w
+    // and smaller one l
+    private void addBox(int h, int a, int b) {
+
+        int w = Math.max(a, b);
+        int l = Math.min(a, b);
+
+        boxes.add(new Box(h, w, l));
+    }
+
+    /*
+       prevW and prevL represent the dimensions
+       of the box directly below the current box.
+
+       The next box must satisfy:
+
+           next.w < prevW
+           next.l < prevL
+    */
+    private int dfs(int prevW, int prevL) {
+
+        String key = prevW + "#" + prevL;
+
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+
+        int answer = 0;
+
+        for (Box box : boxes) {
+
+            if (box.w < prevW && box.l < prevL) {
+
+                answer = Math.max(
+                    answer,
+                    box.h + dfs(box.w, box.l)
+                );
+            }
+        }
+
+        memo.put(key, answer);
+
+        return answer;
+    }
+}
