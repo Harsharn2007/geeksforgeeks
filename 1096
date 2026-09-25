@@ -1,0 +1,86 @@
+import java.util.*;
+
+class Solution {
+
+    private String s;
+    private int index;
+
+    public List<String> braceExpansionII(String expression) {
+        s = expression;
+        index = 0;
+
+        Set<String> result = parseExpression();
+
+        List<String> ans = new ArrayList<>(result);
+        Collections.sort(ans);
+
+        return ans;
+    }
+
+    // Handles UNION: a,b,c
+    private Set<String> parseExpression() {
+        Set<String> result = new HashSet<>();
+
+        // First term
+        result.addAll(parseTerm());
+
+        // More terms separated by comma
+        while (index < s.length() && s.charAt(index) == ',') {
+            index++; // skip ','
+
+            result.addAll(parseTerm());
+        }
+
+        return result;
+    }
+
+    // Handles CONCATENATION: abc, a{b,c}d
+    private Set<String> parseTerm() {
+        Set<String> result = new HashSet<>();
+
+        // Empty string for concatenation
+        result.add("");
+
+        while (index < s.length()
+                && s.charAt(index) != ','
+                && s.charAt(index) != '}') {
+
+            Set<String> next = parseFactor();
+
+            Set<String> combined = new HashSet<>();
+
+            for (String a : result) {
+                for (String b : next) {
+                    combined.add(a + b);
+                }
+            }
+
+            result = combined;
+        }
+
+        return result;
+    }
+
+    // Handles a single letter or {...}
+    private Set<String> parseFactor() {
+
+        // Case 1: { ... }
+        if (s.charAt(index) == '{') {
+            index++; // skip '{'
+
+            Set<String> result = parseExpression();
+
+            index++; // skip '}'
+
+            return result;
+        }
+
+        // Case 2: lowercase letter
+        Set<String> result = new HashSet<>();
+        result.add(String.valueOf(s.charAt(index)));
+
+        index++;
+
+        return result;
+    }
+}
