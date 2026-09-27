@@ -1,0 +1,81 @@
+class Solution {
+public:
+    vector<vector<int>> adj;
+    vector<char> col;
+    vector<int> down, allow1;
+    int ans;
+
+    void solve(int n) {
+        vector<int> parent(n + 1, 0);
+        vector<int> order;
+        vector<char> visited(n + 1, 0);
+        vector<int> stk;
+        stk.reserve(n);
+        stk.push_back(1);
+        visited[1] = 1;
+
+        while (!stk.empty()) {
+            int u = stk.back(); stk.pop_back();
+            order.push_back(u);
+            for (int v : adj[u]) {
+                if (!visited[v]) {
+                    visited[v] = 1;
+                    parent[v] = u;
+                    stk.push_back(v);
+                }
+            }
+        }
+
+        for (int i = (int)order.size() - 1; i >= 0; i--) {
+            int v = order[i];
+            int d1 = 0, d2 = 0, d1id = -1;
+            int a1 = 0, a2 = 0, a1id = -1;
+            int dd1 = 0; // best down among differently-colored children
+
+            for (int c : adj[v]) {
+                if (c == parent[v]) continue;
+                if (col[c] == col[v]) {
+                    int val = down[c];
+                    if (val > d1) { d2 = d1; d1 = val; d1id = c; }
+                    else if (val > d2) d2 = val;
+
+                    int aval = allow1[c];
+                    if (aval > a1) { a2 = a1; a1 = aval; a1id = c; }
+                    else if (aval > a2) a2 = aval;
+                } else {
+                    int val = down[c];
+                    if (val > dd1) dd1 = val;
+                }
+            }
+
+            down[v] = 1 + d1;
+            allow1[v] = 1 + max(a1, dd1);
+
+            int term1 = d1 + d2;                 // two same-color monochromatic arms
+            int term2;                            // same-color down + same-color allow1 (distinct)
+            if (a1id != d1id) term2 = d1 + a1;
+            else term2 = max(d1 + a2, d2 + a1);
+            int term3 = d1 + dd1;                 // same-color down + diff-color down
+
+            int combo = 1 + max({term1, term2, term3});
+            int bestAtV = max(allow1[v], combo);
+            ans = max(ans, bestAtV);
+        }
+    }
+
+    int longestPath(string s, vector<vector<int>>& edges) {
+        int n = (int)s.size();
+        adj.assign(n + 1, {});
+        col.assign(n + 1, 'R');
+        for (int i = 0; i < n; i++) col[i + 1] = s[i];
+        for (auto &e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        down.assign(n + 1, 0);
+        allow1.assign(n + 1, 0);
+        ans = 1;
+        solve(n);
+        return ans;
+    }
+};
