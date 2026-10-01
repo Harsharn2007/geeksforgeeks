@@ -1,0 +1,68 @@
+class Solution {
+    public int minTime(int[] duration, int[][] dependencies) {
+
+        int n = duration.length;
+
+        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        int[] indegree = new int[n];
+
+        // Build graph
+        for (int[] edge : dependencies) {
+            int u = edge[0];
+            int v = edge[1];
+
+            graph.get(u).add(v);
+            indegree[v]++;
+        }
+
+        // dp[i] = earliest time module i can be completed
+        int[] dp = new int[n];
+
+        Queue<Integer> q = new LinkedList<>();
+
+        // Modules with no dependencies
+        for (int i = 0; i < n; i++) {
+            if (indegree[i] == 0) {
+                dp[i] = duration[i];
+                q.offer(i);
+            }
+        }
+
+        int count = 0;
+        int answer = 0;
+
+        while (!q.isEmpty()) {
+
+            int u = q.poll();
+            count++;
+
+            answer = Math.max(answer, dp[u]);
+
+            for (int v : graph.get(u)) {
+
+                dp[v] = Math.max(
+                    dp[v],
+                    dp[u] + duration[v]
+                );
+
+                indegree[v]--;
+
+                if (indegree[v] == 0) {
+                    q.offer(v);
+                }
+            }
+        }
+
+        // Cycle exists
+        if (count != n) {
+            return -1;
+        }
+
+        return answer;
+    }
+}
