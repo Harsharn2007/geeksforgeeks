@@ -1,0 +1,32 @@
+class Solution:
+    def formCoils(self, n):
+        m = 4 * n
+        total = 8 * n * n
+        dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # down, right, up, left
+
+        # segment lengths: m-1, then m-2, m-2, m-4, m-4, ...
+        def seg_lengths():
+            yield m - 1
+            k = m - 2
+            while k > 0:
+                yield k
+                yield k
+                k -= 2
+
+        r = c = 0
+        coil1 = [1]  # value at (0,0)
+        d = 0
+        for length in seg_lengths():
+            dr, dc = dirs[d % 4]
+            for _ in range(length):
+                if len(coil1) == total:
+                    break
+                r += dr
+                c += dc
+                coil1.append(r * m + c + 1)
+            d += 1
+            if len(coil1) == total:
+                break
+
+        coil2 = [m * m + 1 - x for x in coil1]
+        return [coil1, coil2]
