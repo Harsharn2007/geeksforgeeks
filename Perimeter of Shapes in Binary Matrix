@@ -1,0 +1,34 @@
+class Solution {
+    public int findPerimeter(int[][] mat) {
+        int n = mat.length;
+        int m = mat[0].length;
+        int perimeter = 0;
+
+        int[] dr = {-1, 1, 0, 0};
+        int[] dc = {0, 0, -1, 1};
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                if (mat[i][j] == 1) {
+
+                    // Check all 4 sides
+                    for (int k = 0; k < 4; k++) {
+                        int ni = i + dr[k];
+                        int nj = j + dc[k];
+
+                        // Side is exposed if:
+                        // 1. Neighbor is outside matrix
+                        // 2. Neighbor contains 0
+                        if (ni < 0 || ni >= n || nj < 0 || nj >= m
+                                || mat[ni][nj] == 0) {
+                            perimeter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return perimeter;
+    }
+}
