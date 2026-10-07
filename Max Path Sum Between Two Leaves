@@ -1,0 +1,61 @@
+class Solution {
+
+    int maxSum;
+
+    int maxPathSum(Node root) {
+        maxSum = Integer.MIN_VALUE;
+
+        int result = solve(root);
+
+        // Fewer than two leaf nodes
+        if (leafCount(root) < 2) {
+            return -1;
+        }
+
+        return maxSum;
+    }
+
+    int solve(Node root) {
+
+        if (root == null) {
+            return Integer.MIN_VALUE;
+        }
+
+        // Leaf node
+        if (root.left == null && root.right == null) {
+            return root.data;
+        }
+
+        int left = solve(root.left);
+        int right = solve(root.right);
+
+        // If both children contain leaves,
+        // we can form a path between two leaves
+        if (root.left != null && root.right != null) {
+            maxSum = Math.max(maxSum,
+                    left + right + root.data);
+
+            return root.data + Math.max(left, right);
+        }
+
+        // Only one child exists
+        if (root.left != null) {
+            return root.data + left;
+        }
+
+        return root.data + right;
+    }
+
+    int leafCount(Node root) {
+
+        if (root == null) {
+            return 0;
+        }
+
+        if (root.left == null && root.right == null) {
+            return 1;
+        }
+
+        return leafCount(root.left) + leafCount(root.right);
+    }
+}
