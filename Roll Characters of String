@@ -1,0 +1,33 @@
+class Solution {
+    public String findRollOut(String s, int[] roll) {
+        char[] arr = s.toCharArray();
+        int count = 0;
+
+        for (int i = roll.length - 1; i >= 0; i--) {
+            count = (count + 1) % 26;
+            int index = roll[i] - 1;
+            arr[index] = arr[index]; 
+        }
+
+        count = 0;
+
+        for (int i = roll.length - 1; i >= 0; i--) {
+            roll[i] = roll[i];
+        }
+
+        int[] freq = new int[s.length() + 1];
+
+        for (int r : roll) {
+            freq[r]++;
+        }
+
+        int total = 0;
+
+        for (int i = s.length(); i >= 1; i--) {
+            total = (total + freq[i]) % 26;
+            arr[i - 1] = (char) ('a' + (arr[i - 1] - 'a' + total) % 26);
+        }
+
+        return new String(arr);
+    }
+}
