@@ -1,0 +1,53 @@
+
+import java.util.*;
+
+class Solution {
+    public int goodIndices(int[] arr) {
+        int n = arr.length;
+        int[] state = new int[n];
+        // 0 = unvisited, 1 = visiting, 2 = good, 3 = bad
+
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (state[i] != 0) {
+                continue;
+            }
+
+            List<Integer> path = new ArrayList<>();
+            int curr = i;
+
+            while (curr >= 0 && curr < n && state[curr] == 0) {
+                state[curr] = 1;
+                path.add(curr);
+
+                if (arr[curr] == 0) {
+                    break;
+                }
+
+                curr += arr[curr];
+            }
+
+            boolean good = curr < 0 || curr >= n
+                    || (curr >= 0 && curr < n && state[curr] == 2);
+
+            // A zero jump or a cycle makes the path bad.
+            if (curr >= 0 && curr < n && state[curr] == 1) {
+                good = false;
+            }
+
+            for (int k = path.size() - 1; k >= 0; k--) {
+                int idx = path.get(k);
+                state[idx] = good ? 2 : 3;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (state[i] == 2) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
