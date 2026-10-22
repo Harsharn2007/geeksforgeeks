@@ -1,0 +1,70 @@
+class Solution {
+    public int minimumSum(String s) {
+        int n = s.length();
+        char[] a = s.toCharArray();
+
+        // Check whether a palindrome is possible
+        for (int i = 0; i < n / 2; i++) {
+            int j = n - 1 - i;
+
+            if (a[i] != '?' && a[j] != '?' && a[i] != a[j]) {
+                return -1;
+            }
+
+            if (a[i] == '?') a[i] = a[j];
+            else if (a[j] == '?') a[j] = a[i];
+        }
+
+        // A palindrome has mirrored adjacent differences.
+        // Minimize the sum over the first half.
+        int m = n / 2;
+        int[] dp = new int[26];
+        int INF = 1_000_000_000;
+
+        for (int c = 0; c < 26; c++) {
+            dp[c] = (a[0] == '?' || a[0] == (char) ('a' + c))
+                    ? 0 : INF;
+        }
+
+        for (int i = 1; i < m; i++) {
+            int[] ndp = new int[26];
+            char ch = a[i];
+
+            for (int c = 0; c < 26; c++) {
+                ndp[c] = INF;
+
+                if (ch != '?' && ch != (char) ('a' + c)) {
+                    continue;
+                }
+
+                for (int p = 0; p < 26; p++) {
+                    ndp[c] = Math.min(ndp[c],
+                            dp[p] + Math.abs(c - p));
+                }
+            }
+
+            dp = ndp;
+        }
+
+        int best = INF;
+        for (int v : dp) best = Math.min(best, v);
+
+        // Account for the center character when n is odd.
+        if (n % 2 == 1 && n > 1) {
+            char center = a[m];
+
+            if (center != '?') {
+                int c = center - 'a';
+                int extra = INF;
+
+                for (int p = 0; p < 26; p++) {
+                    extra = Math.min(extra, dp[p] + Math.abs(p - c));
+                }
+
+                best = extra;
+            }
+        }
+
+        return best * 2;
+    }
+}
