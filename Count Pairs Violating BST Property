@@ -1,0 +1,38 @@
+class Solution:
+    def pairsViolatingBST(self, root):
+        # 1. Iterative inorder traversal
+        arr = []
+        stack = []
+        cur = root
+        while cur or stack:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+            cur = stack.pop()
+            arr.append(cur.data)
+            cur = cur.right
+
+        # 2. Count inversions using merge sort
+        def merge_count(a):
+            n = len(a)
+            if n <= 1:
+                return a, 0
+            mid = n // 2
+            left, lc = merge_count(a[:mid])
+            right, rc = merge_count(a[mid:])
+            merged = []
+            i = j = 0
+            cnt = lc + rc
+            while i < len(left) and j < len(right):
+                if left[i] < right[j]:
+                    merged.append(left[i])
+                    i += 1
+                else:
+                    cnt += len(left) - i
+                    merged.append(right[j])
+                    j += 1
+            merged.extend(left[i:])
+            merged.extend(right[j:])
+            return merged, cnt
+
+        return merge_count(arr)[1]
