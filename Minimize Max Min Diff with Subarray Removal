@@ -1,0 +1,25 @@
+class Solution:
+    def minDiff(self, k, arr):
+        n = len(arr)
+        INF = float('inf')
+
+        # preMin[i], preMax[i]: min/max of arr[0..i-1]
+        preMin = [INF] * (n + 1)
+        preMax = [-INF] * (n + 1)
+        for i in range(n):
+            preMin[i + 1] = min(preMin[i], arr[i])
+            preMax[i + 1] = max(preMax[i], arr[i])
+
+        # sufMin[j], sufMax[j]: min/max of arr[j..n-1]
+        sufMin = [INF] * (n + 1)
+        sufMax = [-INF] * (n + 1)
+        for j in range(n - 1, -1, -1):
+            sufMin[j] = min(sufMin[j + 1], arr[j])
+            sufMax[j] = max(sufMax[j + 1], arr[j])
+
+        ans = INF
+        for i in range(n - k + 1):
+            mx = max(preMax[i], sufMax[i + k])
+            mn = min(preMin[i], sufMin[i + k])
+            ans = min(ans, mx - mn)
+        return ans
