@@ -1,0 +1,26 @@
+
+class Solution {
+    public int getMaxWeight(String s) {
+        int n = s.length();
+
+        // dp[i] = maximum weight obtainable from the first i characters
+        int[] dp = new int[n + 1];
+
+        dp[0] = 0;
+
+        for (int i = 1; i <= n; i++) {
+            // Keep the current character unpaired
+            dp[i] = dp[i - 1] + 1;
+
+            if (i >= 2) {
+                // If characters differ, no toggle is needed.
+                // Otherwise, one toggle makes them different.
+                int cost = (s.charAt(i - 2) == s.charAt(i - 1)) ? 1 : 0;
+
+                dp[i] = Math.max(dp[i], dp[i - 2] + 4 - cost);
+            }
+        }
+
+        return dp[n];
+    }
+}
