@@ -1,0 +1,25 @@
+
+class Solution {
+    public char nthCharacter(int n) {
+        long pos = n;
+        long digits = 1;
+        long count = 9;
+        long start = 1;
+
+        // Find the digit-length group containing position n
+        while (pos > digits * count) {
+            pos -= digits * count;
+            digits++;
+            count *= 10;
+            start *= 10;
+        }
+
+        // Find the number containing the required digit
+        long number = start + (pos - 1) / digits;
+
+        // Find the digit's index within that number
+        int index = (int) ((pos - 1) % digits);
+
+        return Long.toString(number).charAt(index);
+    }
+}
