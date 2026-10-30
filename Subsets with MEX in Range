@@ -1,0 +1,49 @@
+ class Solution {
+    static final long MOD = 1000000007L;
+
+    public int cntSubsets(int[] arr, int l, int r) {
+        int n = arr.length;
+
+        int[] freq = new int[n + 1];
+
+        for (int x : arr) {
+            if (x <= n) {
+                freq[x]++;
+            }
+        }
+
+        long[] pow2 = new long[n + 1];
+        pow2[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            pow2[i] = (pow2[i - 1] * 2) % MOD;
+        }
+
+        long required = 1;
+        int remaining = n;
+        long ans = 0;
+
+        for (int x = 0; x <= r; x++) {
+
+            // Exclude all occurrences of x
+            remaining -= freq[x];
+
+            if (x > 0) {
+                // Number x-1 must appear at least once
+                if (freq[x - 1] == 0) {
+                    required = 0;
+                } else {
+                    required = (required *
+                        (pow2[freq[x - 1]] - 1 + MOD)) % MOD;
+                }
+            }
+
+            if (x >= l) {
+                long ways = (required * pow2[remaining]) % MOD;
+                ans = (ans + ways) % MOD;
+            }
+        }
+
+        return (int) ans;
+    }
+}
