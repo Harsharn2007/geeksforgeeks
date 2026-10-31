@@ -1,0 +1,21 @@
+class Solution {
+    public int maxPackages(int[] arr, int totalTime) {
+        int n = arr.length;
+
+        int sum = 0;
+        int maxPackages = 0;
+
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
+
+            // Maintain a window of at most totalTime locations
+            if (i >= totalTime) {
+                sum -= arr[i - totalTime];
+            }
+
+            maxPackages = Math.max(maxPackages, sum);
+        }
+
+        return maxPackages;
+    }
+}
