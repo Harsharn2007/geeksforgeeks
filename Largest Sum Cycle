@@ -1,0 +1,54 @@
+
+import java.util.Arrays;
+
+class Solution {
+    public int largestSumCycle(int[] edge) {
+        int n = edge.length;
+
+        boolean[] visited = new boolean[n];
+        int[] position = new int[n];
+
+        Arrays.fill(position, -1);
+
+        int maxSum = -1;
+
+        for (int start = 0; start < n; start++) {
+
+            if (visited[start]) {
+                continue;
+            }
+
+            int curr = start;
+            int step = 0;
+
+            while (curr != -1 && !visited[curr]) {
+                visited[curr] = true;
+                position[curr] = step++;
+                curr = edge[curr];
+            }
+
+            // Detect cycle in the current traversal
+            if (curr != -1 && position[curr] != -1) {
+                int cycleSum = 0;
+                int node = curr;
+
+                do {
+                    cycleSum += node;
+                    node = edge[node];
+                } while (node != curr);
+
+                maxSum = Math.max(maxSum, cycleSum);
+            }
+
+            // Clear positions for the current path
+            curr = start;
+
+            while (curr != -1 && position[curr] != -1) {
+                position[curr] = -1;
+                curr = edge[curr];
+            }
+        }
+
+        return maxSum;
+    }
+}
