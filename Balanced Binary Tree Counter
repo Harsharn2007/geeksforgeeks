@@ -1,0 +1,27 @@
+
+class Solution {
+
+    static final long MOD = 1000000007L;
+
+    static long countBT(int h) {
+
+        if (h == 0) return 1;
+        if (h == 1) return 1;
+
+        long a = 1; // dp[0]
+        long b = 1; // dp[1]
+
+        for (int i = 2; i <= h; i++) {
+
+            long current = (
+                (b * b) % MOD +
+                (2 * b % MOD * a) % MOD
+            ) % MOD;
+
+            a = b;
+            b = current;
+        }
+
+        return b;
+    }
+}
