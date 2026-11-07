@@ -1,0 +1,37 @@
+
+import java.util.*;
+
+class Solution {
+    public ArrayList<String> generateUsernames(String[] arr) {
+        HashSet<String> used = new HashSet<>();
+        HashSet<String> processed = new HashSet<>();
+        HashMap<String, Integer> nextSuffix = new HashMap<>();
+
+        for (String name : arr) {
+            used.add(name);
+        }
+
+        ArrayList<String> result = new ArrayList<>();
+
+        for (String name : arr) {
+            if (processed.add(name)) {
+                result.add(name);
+                nextSuffix.put(name, 1);
+            } else {
+                int suffix = nextSuffix.get(name);
+                String candidate = name + suffix;
+
+                while (used.contains(candidate)) {
+                    suffix++;
+                    candidate = name + suffix;
+                }
+
+                result.add(candidate);
+                used.add(candidate);
+                nextSuffix.put(name, suffix + 1);
+            }
+        }
+
+        return result;
+    }
+}
