@@ -1,0 +1,16 @@
+
+class Solution:
+    def getCount(self, s, k):
+        freq = {}
+
+        for i in range(len(s)):
+            if i == 0 or s[i] != s[i - 1]:
+                freq[s[i]] = freq.get(s[i], 0) + 1
+
+        count = 0
+
+        for ch in freq:
+            if freq[ch] == k:
+                count += 1
+
+        return count
