@@ -1,0 +1,17 @@
+
+class Solution:
+    def minDiff(self, root, k):
+        ans = float('inf')
+
+        while root:
+            ans = min(ans, abs(root.data - k))
+
+            if ans == 0:
+                return 0
+
+            if k < root.data:
+                root = root.left
+            else:
+                root = root.right
+
+        return ans
